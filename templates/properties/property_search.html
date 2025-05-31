@@ -28,7 +28,7 @@
           {% for property in properties %}
             <div class="property-card group">
               <div class="relative overflow-hidden">
-                <img src="{{ property.main_image.url }}"
+                <img src="{% if property.main_image %} {{ property.main_image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
                      alt="{{ property.title }}"
                      width=""
                      height=""
