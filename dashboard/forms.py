@@ -109,12 +109,15 @@ class UserProfileFormAdmin(forms.ModelForm):
             if isinstance(field.widget, forms.ClearableFileInput):
                 field.widget.attrs.update({"class": "input"})
 
-        self.fields["username"].label = "ຊື່ຜູ້ໃຊ້"
-        self.fields["email"].label = "ອີເມວ"
-        self.fields["first_name"].label = "ຊື່"
-        self.fields["last_name"].label = "ນາມສະກຸນ"
-        self.fields["is_active"].label = "ເປີດໃຊ້ງານ"
-        self.fields["is_staff"].label = "ສະຖານະພະນັກງານ"
+        self.fields["avatar"].label = "ຮູບໂປຣໄຟລ໌"
+        self.fields["phone"].label = "ເບີໂທລະສັບ"
+        self.fields["address"].label = "ທີ່ຢູ່"
+        # self.fields["bio"].label = "ກ່ຽວກັບຂ້ອຍ"
+        self.fields["user_type"].label = "ປະເພດຜູ້ໃຊ້"
+        # self.fields["facebook"].label = "ເຟສບຸກ"
+        # self.fields["twitter"].label = "ທະວິດເຕີ"
+        # self.fields["instagram"].label = "ອິນສະຕາແກຣມ"
+        # self.fields["linkedin"].label = "ລິ້ງອິນ"
 
 
 class PropertyTypeFormAdmin(forms.ModelForm):
