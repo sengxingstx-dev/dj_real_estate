@@ -1,0 +1,94 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  Users - Dashboard - EstatePro
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຈັດການຜູ້ໃຊ້</h1>
+      <a href="{% url 'dashboard_user_create' %}" class="btn btn-primary">ເພີ່ມໃໝ່</a>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr class="lao-table-header">
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຜູ້ໃຊ້</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ປະເພດ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ອີເມວ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ເຂົ້າຮ່ວມ</th>
+              <th class="px-6 py-3 text-right font-medium text-neutral-500 uppercase tracking-wider">ຈັດການ</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            {% for profile in profiles %}
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-neutral-200 flex items-center justify-center">
+                      {% if profile.avatar and profile.avatar.url %}
+                        <img src="{{ profile.avatar.url }}"
+                             alt="{{ profile.user.username }}'s avatar"
+                             class="h-full w-full object-cover"
+                             width=""
+                             height="">
+                      {% else %}
+                        <span class="text-neutral-600 font-medium">{{ profile.user.first_name|first|default:profile.user.username|first|upper }}</span>
+                      {% endif %}
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-primary-950">{{ profile.user.get_full_name|default:profile.user.username }}</div>
+                      <div class="text-sm text-neutral-500">@{{ profile.user.username }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="badge {% if profile.user_type == 'admin' %}bg-red-500{% elif profile.user_type == 'agent' %}bg-blue-500{% else %}bg-green-500{% endif %} text-white px-2 py-1 text-sm">
+                    {{ profile.get_user_type_display }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ profile.user.email }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ profile.user.date_joined|timesince }} ago</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <a href="{% url 'dashboard_user_detail' pk=profile.user.pk %}"
+                     class="text-primary-600 hover:text-primary-900 mr-2"
+                     title="ເບິ່ງລາຍລະອຽດ">ເບິ່ງ</a>
+                  <a href="{% url 'dashboard_user_update' pk=profile.user.pk %}"
+                     class="text-blue-600 hover:text-blue-900 mr-2"
+                     title="ແກ້ໄຂຜູ້ໃຊ້">ແກ້ໄຂ</a>
+                  <a href="{% url 'dashboard_user_delete' pk=profile.user.pk %}"
+                     class="text-red-600 hover:text-red-900"
+                     title="ລືບຜູ້ໃຊ້">ລືບ</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if is_paginated %}
+      <div class="mt-6">
+        <nav class="flex justify-center">
+          <ul class="flex space-x-2">
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Previous</a>
+              </li>
+            {% endif %}
+            <li>
+              <span class="px-3 py-2 rounded-md bg-neutral-200 text-neutral-700">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

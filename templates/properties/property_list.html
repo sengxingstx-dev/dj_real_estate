@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  Properties - EstatePro
+{% endblock title %}
+{% block content %}
+  <section class="py-16 bg-neutral-50">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-serif font-bold text-primary-950 text-center mb-8">ຊອກຫາອະສັງຫາໃນຝັນຂອງທ່ານ</h1>
+      <p class="text-lg text-neutral-600 max-w-2xl mx-auto text-center">
+        ຄົ້ນພົບອະສັງຫາລິມະຊັບ, ເຮືອນ, ອາພາດເມັນ ແລະ ເຄຫະສະຖານການຄ້າ ທີ່ຄັດສັນມາຢ່າງດີ ເພື່ອໃຫ້ເຂົ້າກັບໄລສໄຕລ໌ ແລະ ຄວາມຕ້ອງການຂອງທ່ານ.
+      </p>
+    </div>
+    <!-- Search and Filter Form -->
+    <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12">
+      <form method="get"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div>
+          <label for="{{ filter_form.property_type.id_for_label }}" class="label">ປະເພດອະສັງຫາ</label>
+          {{ filter_form.property_type }}
+        </div>
+        <div>
+          <label for="{{ filter_form.location.id_for_label }}" class="label">ສະຖານທີ່</label>
+          {{ filter_form.location }}
+        </div>
+        <div>
+          <label for="{{ filter_form.status.id_for_label }}" class="label">ສະຖານະ</label>
+          {{ filter_form.status }}
+        </div>
+        <div>
+          <label for="{{ filter_form.price_min.id_for_label }}" class="label">ລາຄາຕ່ຳສຸດ</label>
+          {{ filter_form.price_min }}
+        </div>
+        <div>
+          <label for="{{ filter_form.price_max.id_for_label }}" class="label">ລາຄາສູງສຸດ</label>
+          {{ filter_form.price_max }}
+        </div>
+        <div>
+          <label for="{{ filter_form.bedrooms_min.id_for_label }}" class="label">ຈຳນວນຫ້ອງນອນ (ຕ່ຳສຸດ)</label>
+          {{ filter_form.bedrooms_min }}
+        </div>
+        <div>
+          <label for="{{ filter_form.bathrooms_min.id_for_label }}" class="label">ຈຳນວນຫ້ອງນ້ຳ (ຕ່ຳສຸດ)</label>
+          {{ filter_form.bathrooms_min }}
+        </div>
+        <div>
+          <label for="submit"
+                 class="block text-sm font-medium text-neutral-700 mb-1 opacity-0">ຕົວກອງ</label>
+          <button type="submit" class="btn btn-primary w-full py-2.5">ກອງຂໍ້ມູນ</button>
+          <a href="{% url 'property_list' %}"
+             class="btn btn-outline w-full mt-2 py-2.5">ລ້າງຕົວກອງ</a>
+        </div>
+      </form>
+    </div>
+    <!-- Property Listings -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {% for property in properties %}
+        <div class="property-card group">
+          <div class="relative overflow-hidden">
+            <img src="{% if property.main_image %} {{ property.main_image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                 alt="{{ property.title }}"
+                 width=""
+                 height=""
+                 class="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="absolute top-4 left-4">
+              <span class="badge {% if property.status == 'for_sale' %}bg-secondary-500{% elif property.status == 'for_rent' %}bg-primary-500{% else %}bg-neutral-500{% endif %} text-white px-3 py-1">
+                {{ property.get_status_display }}
+              </span>
+            </div>
+            <div class="absolute bottom-4 right-4">
+              <span class="badge bg-neutral-900 bg-opacity-75 text-white px-3 py-1">${{ property.price|floatformat:0 }}</span>
+            </div>
+          </div>
+          <div class="p-6 flex flex-col">
+            <h3 class="text-xl font-medium mb-2 text-primary-950 line-clamp-1">{{ property.title }}</h3>
+            <p class="text-neutral-500 mb-4 flex items-center text-sm">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-4 w-4 mr-1"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              {{ property.location.name }}, {{ property.location.city }}
+            </p>
+            <div class="flex justify-between text-sm text-neutral-600 mb-4">
+              {% if property.bedrooms %}
+                <span class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="h-4 w-4 mr-1 text-primary-600"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  </svg>
+                  {{ property.bedrooms }} ຫ້ອງນອນ
+                </span>
+              {% endif %}
+              {% if property.bathrooms %}
+                <span class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="h-4 w-4 mr-1 text-primary-600"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {{ property.bathrooms }} ຫ້ອງນ້ຳ
+                </span>
+              {% endif %}
+              <span class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-4 w-4 mr-1 text-primary-600"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                </svg>
+                {{ property.area }} sq ft
+              </span>
+            </div>
+            <a href="{{ property.get_absolute_url }}"
+               class="btn btn-outline w-full mt-auto">ເບິ່ງລາຍລະອຽດ</a>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-span-3 text-center py-12">
+          <p class="text-neutral-500">No properties found matching your criteria.</p>
+        </div>
+      {% endfor %}
+    </div>
+    <!-- Pagination (if needed) -->
+    {% if is_paginated %}
+      <div class="mt-12">
+        <nav class="flex justify-center">
+          <ul class="flex space-x-2">
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Previous</a>
+              </li>
+            {% endif %}
+            <li>
+              <span class="px-3 py-2 rounded-md bg-neutral-200 text-neutral-700">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  </section>
+{% endblock content %}

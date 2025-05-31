@@ -1,0 +1,121 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  Reports - Dashboard - EstatePro
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    {% comment %} <h1 class="text-3xl font-serif font-bold text-primary-950 mb-8">Reports & Analytics</h1> {% endcomment %}
+    <!-- Overview Statistics -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <!-- Properties Stats -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-medium text-primary-950 mb-4">ອະສັງຫາ</h2>
+        <div class="space-y-4">
+          <div>
+            <p class="text-neutral-600">ອະສັງຫາທັງໝົດ</p>
+            <p class="text-3xl font-bold text-primary-600">{{ total_properties }}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p class="text-sm text-neutral-600">ເດືອນທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ properties_last_month }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">Quarter ທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ properties_last_quarter }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">ປີທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ properties_last_year }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Inquiries Stats -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-medium text-primary-950 mb-4">ການສອບຖາມ</h2>
+        <div class="space-y-4">
+          <div>
+            <p class="text-neutral-600">ການສອບຖາມທັງໝົດ</p>
+            <p class="text-3xl font-bold text-secondary-500">{{ total_inquiries }}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p class="text-sm text-neutral-600">ເດືອນທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ inquiries_last_month }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">Quarter ທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ inquiries_last_quarter }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">ປີທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ inquiries_last_year }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Users Stats -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-medium text-primary-950 mb-4">ຜູ້ໃຊ້ງານ</h2>
+        <div class="space-y-4">
+          <div>
+            <p class="text-neutral-600">ຜູ້ໃຊ້ງານທັງໝົດ</p>
+            <p class="text-3xl font-bold text-primary-600">{{ total_users }}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p class="text-sm text-neutral-600">ເດືອນທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ users_last_month }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">Quarter ທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ users_last_quarter }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-neutral-600">ປີທີ່ແລ້ວ</p>
+              <p class="text-lg font-semibold text-primary-950">{{ users_last_year }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Property Types Distribution -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-medium text-primary-950 mb-4">ປະເພດອະສັງຫາ</h2>
+        <div class="space-y-4">
+          {% for type in property_types %}
+            <div class="flex items-center justify-between">
+              <span class="text-neutral-600">{{ type.name }}</span>
+              <span class="font-medium text-primary-950">{{ type.count }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- Status Distribution -->
+      <div class="bg-white rounded-xl shadow-lg p-6">
+        <h2 class="text-xl font-medium text-primary-950 mb-4">ສະຖານະ</h2>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-600">For Sale</span>
+            <span class="font-medium text-green-600">{{ status_distribution.for_sale }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-600">For Rent</span>
+            <span class="font-medium text-blue-600">{{ status_distribution.for_rent }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-600">Sold</span>
+            <span class="font-medium text-purple-600">{{ status_distribution.sold }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-600">Rented</span>
+            <span class="font-medium text-yellow-600">{{ status_distribution.rented }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

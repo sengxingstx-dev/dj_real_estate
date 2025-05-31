@@ -1,0 +1,90 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+  Properties - Dashboard - EstatePro
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຈັດການອະສັງຫາ</h1>
+      <a href="{% url 'dashboard_property_create' %}" class="btn btn-primary">ເພີ່ມໃໝ່</a>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ອະສັງຫາ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ສະຖານະ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ລາຄາ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ສະຖານທີ່</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ເພີ່ມວັນທີ່</th>
+              <th class="px-6 py-3 text-right font-medium text-neutral-500 uppercase tracking-wider text-right">ຈັດການ</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            {% for property in properties %}
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <img class="h-10 w-10 rounded-full object-cover"
+                         src="{% if property.main_image %} {{ property.main_image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                         width=""
+                         height=""
+                         alt="">
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-primary-950">{{ property.title }}</div>
+                      <div class="text-sm text-neutral-500">{{ property.property_type.name }}</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="badge {% if property.status == 'for_sale' %}bg-green-500{% elif property.status == 'for_rent' %}bg-blue-500{% elif property.status == 'sold' %}bg-neutral-500{% else %}bg-purple-500{% endif %} text-white px-2 py-1 text-sm">
+                    {{ property.get_status_display }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">${{ property.price|floatformat:0|intcomma }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ property.location.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ property.created_at|timesince }} ago</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                  <a href="{% url 'dashboard_property_update' property.pk %}"
+                     class="text-primary-600 hover:text-primary-900 mr-3">ແກ້ໄຂ</a>
+                  <a href="{% url 'dashboard_property_delete' property.pk %}"
+                     class="text-red-600 hover:text-red-900">ລືບ</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-sm text-neutral-500">No data found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if is_paginated %}
+      <div class="mt-6">
+        <nav class="flex justify-center">
+          <ul class="flex space-x-2">
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Previous</a>
+              </li>
+            {% endif %}
+            <li>
+              <span class="px-3 py-2 rounded-md bg-neutral-200 text-neutral-700">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

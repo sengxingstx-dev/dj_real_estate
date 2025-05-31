@@ -1,0 +1,69 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  Property Types - Dashboard - EstatePro
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຈັດການປະເພດອະສັງຫາ</h1>
+      <a href="{% url 'dashboard_property_type_create' %}"
+         class="btn btn-primary">ເພີ່ມໃໝ່</a>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr class="lao-table-header">
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຊື່</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຄຳອະທິບາຍ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider text-right">ຈັດການ</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            {% for ptype in property_types %}
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-950">{{ ptype.name }}</td>
+                <td class="px-6 py-4 text-sm text-neutral-500 max-w-md truncate"
+                    title="{{ ptype.description }}">{{ ptype.description|truncatewords:20 }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium">
+                  <a href="{% url 'dashboard_property_type_update' pk=ptype.pk %}"
+                     class="text-blue-600 hover:text-blue-900 mr-2">ແກ້ໄຂ</a>
+                  <a href="{% url 'dashboard_property_type_delete' pk=ptype.pk %}"
+                     class="text-red-600 hover:text-red-900">ລືບ</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="3" class="px-6 py-4 text-center text-sm text-neutral-500">No property types found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if is_paginated %}
+      <div class="mt-6">
+        <nav class="flex justify-center">
+          <ul class="flex space-x-2">
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Previous</a>
+              </li>
+            {% endif %}
+            <li>
+              <span class="px-3 py-2 rounded-md bg-neutral-200 text-neutral-700">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">Next</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

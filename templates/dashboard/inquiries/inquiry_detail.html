@@ -1,0 +1,88 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  Inquiry Details - {{ inquiry.name }} - Dashboard
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຜູ້ຊອບຖາມ: {{ inquiry.name }}</h1>
+      <div>
+        {% if request.user.is_staff or request.user.profile.user_type == "admin" or request.user.profile.user_type == "agent" %}
+          <a href="{% url 'dashboard_inquiry_update' pk=inquiry.pk %}"
+             class="btn btn-secondary mr-2">ແກ້ໄຂ</a>
+        {% endif %}
+        <a href="{% url 'dashboard_inquiries' %}" class="btn btn-outline">ກັບຄືນ</a>
+      </div>
+    </div>
+    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+        <div>
+          <h2 class="text-xl font-semibold text-primary-900 mb-3">ຂໍ້ມູນການຕິດຕໍ່</h2>
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ຊື່ ແລະ ນາມສະກຸນ</dt>
+              <dd class="text-neutral-900">
+                {{ inquiry.name }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ອີເມວ</dt>
+              <dd class="text-neutral-900">
+                {{ inquiry.email }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ເບີໂທ</dt>
+              <dd class="text-neutral-900">
+                {{ inquiry.phone }}
+              </dd>
+            </div>
+            {% if inquiry.user %}
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">ສົ່ງໂດຍຜູ້ໃຊ້</dt>
+                <dd class="text-neutral-900">
+                  <a href="{% url 'dashboard_user_detail' pk=inquiry.user.pk %}"
+                     class="text-primary-600 hover:underline">{{ inquiry.user.username }}</a>
+                </dd>
+              </div>
+            {% endif %}
+          </dl>
+        </div>
+        <div>
+          <h2 class="text-xl font-semibold text-primary-900 mb-3">ລາຍລະອຽດການສອບຖາມ</h2>
+          <dl class="space-y-3">
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ອະສັງຫາ</dt>
+              <dd class="text-neutral-900">
+                <a href="{% url 'property_detail' pk=inquiry.property.pk slug=inquiry.property.slug %}"
+                   target="_blank"
+                   class="text-primary-600 hover:underline">{{ inquiry.property.title }}</a>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ສະຖານະ</dt>
+              <dd class="text-neutral-900">
+                <span class="badge {% if inquiry.status == 'new' %}bg-green-500{% elif inquiry.status == 'in_progress' %}bg-blue-500{% else %}bg-neutral-500{% endif %} text-white px-2 py-1 text-xs rounded-full">
+                  {{ inquiry.get_status_display }}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ໄດ້ຮັບເມື່ອ</dt>
+              <dd class="text-neutral-900">
+                {{ inquiry.created_at|date:"F j, Y, P" }} ({{ inquiry.created_at|timesince }} ago)
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="md:col-span-2 mt-4">
+          <dt class="text-sm font-medium text-neutral-500 mb-1">ຂໍ້ຄວາມ</dt>
+          <dd class="text-neutral-900 p-4 bg-neutral-50 rounded-md prose prose-sm max-w-none">
+            {{ inquiry.message|linebreaksbr }}
+          </dd>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

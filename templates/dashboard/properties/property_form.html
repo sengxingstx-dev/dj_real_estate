@@ -1,0 +1,120 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  {{ form_title }} - Dashboard - EstatePro
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      {% comment %} <h1 class="text-3xl font-serif font-bold text-primary-950">{{ form_title }}</h1> {% endcomment %}
+      <a href="{% url 'dashboard_properties' %}" class="btn btn-secondary">ກັບຄືນ</a>
+    </div>
+    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+      <h2 class="text-2xl font-semibold text-primary-900 mb-6 border-b pb-3">ລາຍລະອຽດອະສັງຫາ</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+        <form method="post"
+              enctype="multipart/form-data"
+              class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-x-6">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="mb-4 {% if field.name == 'description' or field.name == 'features' %}md:col-span-2{% endif %}">
+              <label for="{{ field.id_for_label }}"
+                     class="block text-sm font-medium text-neutral-700 mb-1">{{ field.label }}</label>
+              {% if field.name == "features" %}
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 mt-1 border p-3 rounded-md max-h-60 overflow-y-auto">
+                  {% for choice in field %}
+                    <label class="flex items-center space-x-2 text-sm text-neutral-800">
+                      {{ choice.tag }}
+                      <span>{{ choice.choice_label }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
+              {% if field.help_text %}<p class="mt-1 text-xs text-neutral-500">{{ field.help_text }}</p>{% endif %}
+              {% if field.errors %}
+                <div class="mt-1 text-sm text-red-600">
+                  {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+          {% if form.non_field_errors %}
+            <div class="my-3 p-3 bg-red-100 border border-red-400 text-red-700 rounded md:col-span-2">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+          <div class="mt-8 md:col-span-2">
+            <button type="submit" class="btn btn-primary">
+              {% if "Update" in form_title or object %}
+                ແກ້ໄຂອະສັງຫາ
+              {% else %}
+                ເພີ່ມອະສັງຫາ
+              {% endif %}
+            </button>
+          </div>
+        </form>
+      </div>
+      {% if "Update" in form_title or object %}
+        {# Show image management only on update #}
+        <hr class="my-10">
+        <h2 class="text-2xl font-semibold text-primary-900 mb-6 border-b pb-3">ຄັງຮູບພາບ</h2>
+        <!-- Form to add new image -->
+        <div class="mb-8 p-6 bg-neutral-50 rounded-lg">
+          <h3 class="text-xl font-medium text-primary-800 mb-4">ເພີ່ມຮູບ</h3>
+          <form method="post"
+                action="{% url 'dashboard_property_image_add' property_pk=object.pk %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in new_image_form %}
+              <div class="mb-3">
+                <label for="{{ field.id_for_label }}"
+                       class="block text-sm font-medium text-neutral-700 mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}<p class="mt-1 text-xs text-neutral-500">{{ field.help_text|safe }}</p>{% endif %}
+                {% if field.errors %}
+                  <div class="mt-1 text-sm text-red-600">
+                    {% for error in field.errors %}<p>{{ error }}</p>{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-2">ອັບໂຫຼດຮູບ</button>
+          </form>
+        </div>
+        <!-- List of existing images -->
+        {% if property_images %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for image in property_images %}
+              <div class="bg-white border border-neutral-200 rounded-lg shadow-sm overflow-hidden">
+                <img src="{% if image.image %} {{ image.image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                     alt="{{ image.caption|default:'Gallery image' }}"
+                     width=""
+                     height=""
+                     class="w-full h-48 object-cover">
+                <div class="p-4">
+                  <p class="text-sm text-neutral-700 truncate" title="{{ image.caption }}">{{ image.caption|default:"(No caption)" }}</p>
+                  <p class="text-xs text-neutral-500">Order: {{ image.order }}</p>
+                  {% if image.is_primary %}
+                    <span class="inline-block mt-1 bg-yellow-400 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full">Primary</span>
+                  {% else %}
+                    <span class="inline-block mt-1 bg-yellow-400 text-yellow-800 text-xs font-semibold px-2 py-0.5 rounded-full"></span>
+                  {% endif %}
+                  <div class="mt-3 flex justify-end space-x-2">
+                    <a href="{% url 'dashboard_property_image_update' pk=image.pk %}"
+                       class="btn btn-xs btn-secondary">ແກ້ໄຂ</a>
+                    <a href="{% url 'dashboard_property_image_delete' pk=image.pk %}"
+                       class="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5">ລືບ</a>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-neutral-600">No gallery images uploaded yet for this property.</p>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,146 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  {{ user_obj.username }} - User Details - Dashboard
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຜູ້ໃຊ້: {{ user_obj.username }}</h1>
+      <div>
+        <a href="{% url 'dashboard_user_update' pk=user_obj.pk %}"
+           class="btn btn-secondary mr-2">ແກ້ໄຂຜູ້ໃຊ້</a>
+        <a href="{% url 'dashboard_users' %}" class="btn btn-outline">ກັບຄືນ</a>
+      </div>
+    </div>
+    <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6">
+        <div class="md:col-span-1">
+          <h2 class="text-xl font-semibold text-primary-900 mb-3">ຂໍ້ມູນບັນຊີຜູ້ໃຊ້</h2>
+          <dl class="space-y-2">
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ຊື່ຜູ້ໃຊ້</dt>
+              <dd class="text-neutral-900">
+                {{ user_obj.username }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ຊື່ ແລະ ນາມສະກຸນ</dt>
+              <dd class="text-neutral-900">
+                {{ user_obj.get_full_name|default:"N/A" }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ອີເມວ</dt>
+              <dd class="text-neutral-900">
+                {{ user_obj.email }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ພະນັກງານ</dt>
+              <dd class="text-neutral-900">
+                {% if user_obj.is_staff %}
+                  Yes
+                {% else %}
+                  No
+                {% endif %}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ໃຊ້ງານໄດ້</dt>
+              <dd class="text-neutral-900">
+                {% if user_obj.is_active %}
+                  Yes
+                {% else %}
+                  No
+                {% endif %}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ວັນທີ່ເຂົ້າຮ່ວມ</dt>
+              <dd class="text-neutral-900">
+                {{ user_obj.date_joined|date:"F j, Y, P" }}
+              </dd>
+            </div>
+            <div>
+              <dt class="text-sm font-medium text-neutral-500">ເຂົ້າສູ່ລະບົບລ່າສຸດ</dt>
+              <dd class="text-neutral-900">
+                {{ user_obj.last_login|date:"F j, Y, P"|default:"Never" }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+        <div class="md:col-span-2">
+          <h2 class="text-xl font-semibold text-primary-900 mb-3">ລາຍລະອຽດໂປຣໄຟຣ</h2>
+          {% if profile %}
+            <dl class="space-y-2">
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">ປະເພດຜູ້ໃຊ້</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.get_user_type_display }}
+                </dd>
+              </div>
+              {% if profile.avatar %}
+                <div>
+                  <dt class="text-sm font-medium text-neutral-500">ຮູບໂປຣໄຟຣ</dt>
+                  <dd>
+                    <img src="{{ profile.avatar.url }}"
+                         alt="{{ user_obj.username }}'s avatar"
+                         class="h-20 w-20 rounded-full object-cover mt-1"
+                         width=""
+                         height="">
+                  </dd>
+                </div>
+              {% endif %}
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">ເບີໂທ</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.phone|default:"N/A" }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">ທີ່ຢູ່</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.address|default:"N/A" }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">ປະຫວັດຫຍໍ້</dt>
+                <dd class="text-neutral-900 prose prose-sm max-w-none">
+                  {{ profile.bio|linebreaksbr|default:"N/A" }}
+                </dd>
+              </div>
+              <h3 class="text-lg font-semibold text-primary-800 pt-3 mb-1">Social Media</h3>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">Facebook</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.facebook|urlize|default:"N/A" }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">Twitter</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.twitter|urlize|default:"N/A" }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">Instagram</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.instagram|urlize|default:"N/A" }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-neutral-500">LinkedIn</dt>
+                <dd class="text-neutral-900">
+                  {{ profile.linkedin|urlize|default:"N/A" }}
+                </dd>
+              </div>
+            </dl>
+          {% else %}
+            <p class="text-neutral-600">No profile information available for this user.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

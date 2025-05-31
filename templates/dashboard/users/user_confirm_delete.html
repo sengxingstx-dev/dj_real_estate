@@ -1,0 +1,28 @@
+{% extends "base_dashboard.html" %}
+{% load static %}
+{% block title %}
+  Confirm Delete User - Dashboard
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-lg mx-auto bg-white p-6 md:p-8 rounded-xl shadow-lg">
+      <h1 class="text-2xl font-serif font-bold text-primary-950 mb-6">ຢືນຢັນການລືບ</h1>
+      <p class="text-neutral-700 mb-4">
+        ທ່ານຕ້ອງການລືບຜູ້ໃຊ້ນີ້ແທ້ບໍ "<strong>{{ user_to_delete.username }}</strong>"?
+      </p>
+      <p class="text-sm text-red-600 mb-6">
+        This action cannot be undone. All associated data (like their profile and any content they created that relies on their user account) will also be affected or removed according to database rules.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="flex justify-end space-x-3 mt-8">
+          <a href="{% url 'dashboard_users' %}" class="btn btn-outline">ຍົກເລິກ</a>
+          <button type="submit"
+                  class="focus:outline-none text-white bg-red-700 hover:bg-red-800 font-medium rounded-lg text-sm px-5 py-2.5">
+            ຕົກລົງ
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

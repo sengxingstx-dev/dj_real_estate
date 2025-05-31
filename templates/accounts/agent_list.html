@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  Our Agents - EstatePro
+{% endblock title %}
+{% block content %}
+  <section class="py-16 bg-neutral-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-serif font-bold text-primary-950 mb-4">ພົບກັບຕົວແທນຜູ້ຊ່ຽວຊານຂອງພວກເຮົາ</h1>
+        <p class="text-lg text-neutral-600 max-w-2xl mx-auto">
+          ທີມງານມືອາຊີບຂອງພວກເຮົາອຸທິດຕົນເພື່ອຊ່ວຍທ່ານຊອກຫາອະສັງຫາລິມະຊັບໃນຝັນຂອງທ່ານ.
+        </p>
+      </div>
+      {% if agents %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {% for agent_profile in agents %}
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden group transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+              <div class="relative">
+                {% if agent_profile.avatar %}
+                  <img src="{{ agent_profile.avatar.url }}"
+                       alt="{{ agent_profile.full_name }}"
+                       class="w-full h-64 object-cover">
+                {% else %}
+                  <div class="w-full h-64 bg-primary-100 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-24 w-24 text-primary-500"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                {% endif %}
+              </div>
+              <div class="p-6 text-center">
+                <h3 class="text-xl font-semibold text-primary-900 mb-1">{{ agent_profile.full_name }}</h3>
+                <p class="text-secondary-600 text-sm mb-3">ຕົວແທນອະສັງຫາລິມະຊັບ</p>
+                {% if agent_profile.phone %}<p class="text-neutral-600 text-sm mb-1">{{ agent_profile.phone }}</p>{% endif %}
+                <p class="text-neutral-600 text-sm mb-4">{{ agent_profile.user.email }}</p>
+                {% comment %} <a href="{% url 'agent_detail' pk=agent_profile.pk %}"
+                   class="btn btn-primary-outline w-full text-sm">View Profile</a> {% endcomment %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-12">
+          <p class="text-xl text-neutral-500">No agents found at the moment. Please check back later.</p>
+        </div>
+      {% endif %}
+      <!-- Pagination can be added here if you have many agents -->
+    </div>
+  </section>
+{% endblock content %}

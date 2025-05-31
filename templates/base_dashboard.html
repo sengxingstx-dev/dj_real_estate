@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real Estate Dashboard" />
+    <meta name="keywords" content="HTML, CSS, JavaScript" />
+    <title>
+      {% block title %}
+        Real Estate Dashboard
+      {% endblock title %}
+    </title>
+    {% load static %}
+    {% load tailwind_tags %}
+    {% tailwind_css %}
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.8.1/flowbite.min.js"
+            defer></script>
+  </head>
+  <body class="flex flex-col min-h-screen">
+    {% include "partials/navbar_dashboard.html" %}
+    <div class="flex flex-grow">
+      {% include "partials/sidebar_dashboard.html" %}
+      <main class="flex-grow">
+        {% block content %}
+        {% endblock content %}
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+  {{ property.title }} - {{ property.location.name }} - EstatePro
+{% endblock title %}
+{% block content %}
+  <section class="py-12 bg-neutral-100">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <!-- Property Header -->
+        <div class="mb-8">
+          <h1 class="text-3xl md:text-4xl font-serif font-bold text-primary-950 mb-2">
+            {{ property.title }} - {{ property.location.name }}
+          </h1>
+          <p class="text-neutral-600 text-lg">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-5 w-5 inline-block mr-1"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            {{ property.location.name }}, {{ property.location.city }}
+          </p>
+        </div>
+        <!-- Property Gallery -->
+        <div class="mb-12">
+          {% if property.images.all %}
+            <div id="property-gallery" class="relative w-full" data-carousel="slide">
+              <div class="relative h-96 overflow-hidden rounded-xl">
+                {% for image in property.images.all %}
+                  <div class="hidden duration-700 ease-in-out"
+                       data-carousel-item
+                       {% if forloop.first %}data-carousel-item="active"{% endif %}>
+                    <img src="{% if image.image %} {{ image.image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                         class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                         alt="{{ image.caption }}"
+                         width=""
+                         height="">
+                    {% if image.caption %}
+                      <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-4 w-full">
+                        <p class="text-sm">{{ image.caption }}</p>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endfor %}
+              </div>
+              <button type="button"
+                      class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                      data-carousel-prev>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50  group-focus:ring-4 group-focus:ring-white  group-focus:outline-none">
+                  <svg aria-hidden="true"
+                       class="w-6 h-6 text-white "
+                       fill="none"
+                       stroke="currentColor"
+                       viewBox="0 0 24 24"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                  <span class="sr-only">Previous</span>
+                </span>
+              </button>
+              <button type="button"
+                      class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                      data-carousel-next>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30  group-hover:bg-white/50  group-focus:ring-4 group-focus:ring-white  group-focus:outline-none">
+                  <svg aria-hidden="true"
+                       class="w-6 h-6 text-white "
+                       fill="none"
+                       stroke="currentColor"
+                       viewBox="0 0 24 24"
+                       xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                  <span class="sr-only">Next</span>
+                </span>
+              </button>
+            </div>
+          {% else %}
+            <div class="bg-neutral-200 h-96 flex items-center justify-center rounded-xl">
+              <p class="text-neutral-500">No images available for this property.</p>
+            </div>
+          {% endif %}
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Property Details -->
+          <div class="md:col-span-2">
+            <!-- Property Description -->
+            <div class="mb-8">
+              <h3 class="text-2xl font-serif font-semibold text-primary-950 mb-4">ຄຳອະທິບາຍ</h3>
+              <p class="text-neutral-600">{{ property.description|linebreaks }}</p>
+            </div>
+            <!-- Property Features -->
+            <div class="mb-10">
+              <h3 class="text-2xl font-serif font-semibold text-primary-950 mb-4">ຄຸນສົມບັດ</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% if property.bedrooms %}
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 mr-2 text-secondary-500"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {{ property.bathrooms }} ຫ້ອງນອນ
+                  </div>
+                {% endif %}
+                {% if property.garages %}
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 mr-2 text-secondary-500"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    {{ property.garages }} ບ່ອນຈອດລົດ
+                  </div>
+                {% endif %}
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="h-5 w-5 mr-2 text-secondary-500"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                  </svg>
+                  {{ property.area }} sq ft
+                </div>
+              </div>
+            </div>
+            {% if property.features.all %}
+              <div class="mb-10">
+                <h3 class="text-2xl font-serif font-semibold text-primary-950 mb-4">ຄຸນສົມບັດເພີ່ມເຕີມ</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {% for feature in property.features.all %}
+                    <div class="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg"
+                           class="h-5 w-5 mr-2 text-secondary-500"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {{ feature.name }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+          <!-- Inquiry Form -->
+          <div class="bg-white p-6 rounded-xl shadow-lg h-fit">
+            <h3 class="text-xl font-serif font-semibold text-primary-950 mb-4">ສົນໃຈອະສັງຫານີ້?</h3>
+            <form method="post" class="space-y-4">
+              {% csrf_token %}
+              {% if inquiry_form.non_field_errors %}
+                <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                  {% for error in inquiry_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                </div>
+              {% endif %}
+              {% for field in inquiry_form %}
+                <div>
+                  <label for="{{ field.id_for_label }}"
+                         class="block text-sm font-medium text-neutral-700 mb-1">{{ field.label }}</label>
+                  {{ field }}
+                  {% if field.errors %}
+                    {% for error in field.errors %}<p class="text-red-500 text-sm mt-1">{{ error }}</p>{% endfor %}
+                  {% endif %}
+                </div>
+              {% endfor %}
+              <button type="submit" class="btn btn-primary w-full">ສົ່ງຄຳສອບຖາມ</button>
+            </form>
+          </div>
+        </div>
+        <!-- Related Properties -->
+        {% if related_properties %}
+          <div class="mt-12">
+            <h2 class="text-2xl font-serif font-semibold text-primary-950 mb-6">Similar Properties</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {% for related in related_properties %}
+                <div class="property-card group">
+                  <div class="relative overflow-hidden">
+                    <img src="{% if property.main_image %} {{ property.main_image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                         alt="{{ related.title }}"
+                         width=""
+                         height=""
+                         class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute top-4 left-4">
+                      <span class="badge {% if related.status == 'for_sale' %}bg-secondary-500{% elif related.status == 'for_rent' %}bg-primary-500{% else %}bg-neutral-500{% endif %} text-white px-3 py-1">
+                        {{ related.get_status_display }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="p-4">
+                    <h3 class="text-lg font-medium mb-2 text-primary-950">{{ related.title }}</h3>
+                    <p class="text-neutral-600 text-sm mb-4">{{ related.location.name }}</p>
+                    <a href="{{ related.get_absolute_url }}" class="btn btn-outline w-full">View Details</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% endblock content %}

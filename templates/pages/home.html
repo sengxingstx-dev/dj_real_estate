@@ -1,0 +1,574 @@
+{% extends "base.html" %}
+{% block title %}
+{% load static %}
+  EstatePro - Find Your Dream Property
+{% endblock title %}
+{% block content %}
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-r from-primary-950 to-primary-800 text-white">
+    <div class="absolute inset-0 opacity-20"
+         style="background-image: url('https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2');
+                background-size: cover;
+                background-position: center"></div>
+    <div class="container mx-auto px-4 py-24 md:py-32 relative z-10">
+      <div class="max-w-3xl fade-in">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold mb-6 leading-tight">ຊອກຫາອະສັງຫາໃນຝັນຂອງທ່ານ</h1>
+        <p class="text-xl md:text-2xl mb-8 text-neutral-100">
+          ຄົ້ນພົບອະສັງຫາລິມະຊັບ, ເຮືອນ, ອາພາດເມັນ ແລະ ເຄຫະສະຖານການຄ້າ ທີ່ຄັດສັນມາຢ່າງດີ ເພື່ອໃຫ້ເຂົ້າກັບໄລສໄຕລ໌ ແລະ ຄວາມຕ້ອງການຂອງທ່ານ.
+        </p>
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <a href="{% url 'property_list' %}"
+             class="btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1">
+            ຄົ້ນຫາອະສັງຫາ
+          </a>
+          <a href="{% url 'contact' %}"
+             class="btn bg-white text-primary-950 hover:bg-neutral-100 px-8 py-3 rounded-lg text-lg font-medium transition-all duration-300 transform hover:-translate-y-1">
+            ຕິດຕໍ່ພວກເຮົາ
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Property Search Form -->
+    <div class="container mx-auto px-4 pb-16 relative z-10">
+      <div class="bg-white rounded-xl shadow-xl p-6 md:p-8 max-w-5xl mx-auto -mb-24 slide-in">
+        <h3 class="text-primary-950 text-xl md:text-2xl font-medium mb-6">ຊອກຫາອະສັງຫາໃນຝັນຂອງທ່ານ</h3>
+        <form action="{% url 'property_search' %}"
+              method="get"
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label for="search" class="label">ຄົ້ນຫາ</label>
+            <input type="text"
+                   id="search"
+                   name="q"
+                   placeholder="Enter keywords"
+                   class="input text-black">
+          </div>
+          <div>
+            <label for="property_type" class="label">ປະເພດອະສັງຫາ</label>
+            <select id="property_type" name="property_type" class="input text-black">
+              <option value="">ທຸກປະເພດ</option>
+              {% for property_type in property_types %}
+                <option value="{{ property_type.id }}">{{ property_type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="location" class="label">ສະຖານທີ່</label>
+            <select id="location" name="location" class="input text-black">
+              <option value="">ທຸກສະຖານທີ່</option>
+              {% for location in locations %}<option value="{{ location.id }}">{{ location.name }}</option>{% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="submit"
+                   class="block text-sm font-medium text-neutral-700 mb-1 opacity-0">ຄົ້ນຫາ</label>
+            <button type="submit" class="btn btn-primary w-full py-2.5">ຄົ້ນຫາອະສັງຫາ</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <!-- Featured Properties -->
+  <section class="py-32 bg-neutral-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif mb-4">ອະສັງຫາແນະນໍາ</h2>
+        <p class="text-neutral-600 max-w-2xl mx-auto">
+          ຄົ້ນພົບອະສັງຫາລິມະຊັບທີ່ຄັດສັນມາຢ່າງດີ ເຊິ່ງໂດດເດັ່ນດ້ວຍຄຸນນະພາບ, ສະຖານທີ່ຕັ້ງ ແລະ ມູນຄ່າທີ່ເປັນເລີດ.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for property in featured_properties %}
+          <div class="property-card group">
+            <div class="relative overflow-hidden">
+              <img src="{% if property.main_image %} {{ property.main_image.url }} {% else %} {% static 'img/placeholder.jpg' %} {% endif %}"
+                   alt="{{ property.title }}"
+                   width=""
+                   height=""
+                   class="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105">
+              <div class="absolute top-4 left-4">
+                <span class="badge {% if property.status == 'for_sale' %}bg-secondary-500{% elif property.status == 'for_rent' %}bg-primary-500{% else %}bg-neutral-500{% endif %} text-white px-3 py-1">
+                  {{ property.get_status_display }}
+                </span>
+              </div>
+              <div class="absolute bottom-4 right-4">
+                <span class="badge bg-neutral-900 bg-opacity-75 text-white px-3 py-1">${{ property.price|floatformat:0 }}</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-medium mb-2 text-primary-950 line-clamp-1">{{ property.title }}</h3>
+              <p class="text-neutral-500 mb-4 flex items-center text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-4 w-4 mr-1"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                {{ property.location.name }}, {{ property.location.city }}
+              </p>
+              <div class="flex justify-between text-sm text-neutral-600 mb-4">
+                {% if property.bedrooms %}
+                  <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-4 w-4 mr-1 text-primary-600"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    {{ property.bedrooms }} Beds
+                  </span>
+                {% endif %}
+                {% if property.bathrooms %}
+                  <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-4 w-4 mr-1 text-primary-600"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    {{ property.bathrooms }} Baths
+                  </span>
+                {% endif %}
+                <span class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="h-4 w-4 mr-1 text-primary-600"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                  </svg>
+                  {{ property.area }} sq ft
+                </span>
+              </div>
+              <a href="{{ property.get_absolute_url }}" class="btn btn-outline w-full">View Details</a>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-span-3 text-center py-12">
+            <p class="text-neutral-500">ບໍ່ມີອະສັງຫາແນະນໍາໃນຂະນະນີ້.</p>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="text-center mt-12">
+        <a href="{% url 'property_list' %}" class="btn btn-primary">ເບິ່ງອະສັງຫາທັງໝົດ</a>
+      </div>
+    </div>
+  </section>
+  <!-- Property Types -->
+  <section class="py-24 bg-neutral-100">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-serif mb-4">ຄົ້ນຫາຕາມປະເພດອະສັງຫາ</h2>
+        <p class="text-neutral-600 max-w-2xl mx-auto">
+          ສຳຫຼວດອະສັງຫາລິມະຊັບປະເພດຕ່າງໆ ເພື່ອຊອກຫາສິ່ງທີ່ເໝາະສົມກັບຄວາມຕ້ອງການ ແລະ ຄວາມມັກຂອງທ່ານ.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for property_type in property_types %}
+          <a href="{% url 'property_list' %}?property_type={{ property_type.id }}"
+             class="group">
+            <div class="bg-white rounded-xl shadow-property overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+              <div class="h-40 bg-primary-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     class="h-20 w-20 text-primary-600 group-hover:text-primary-800 transition-colors"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-medium text-center text-primary-950">{{ property_type.name }}</h3>
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!-- Why Choose Us -->
+  <section class="py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-serif mb-4">ເປັນຫຍັງຕ້ອງເລືອກ My Way Production</h2>
+        <p class="text-neutral-600 max-w-2xl mx-auto">
+          ພວກເຮົາໝັ້ນໝາຍໃນການໃຫ້ບໍລິການທີ່ເປັນເລີດ ແລະ ຊ່ວຍທ່ານຊອກຫາອະສັງຫາລິມະຊັບທີ່ສົມບູນແບບ.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center p-6 bg-neutral-50 rounded-xl fade-in">
+          <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-8 w-8 text-primary-600"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium mb-2">ມີໃຫ້ເລືອກຫຼາກຫຼາຍ</h3>
+          <p class="text-neutral-600">ສຳຫຼວດອະສັງຫາລິມະຊັບຫຼາຍພັນແຫ່ງ ໃນສະຖານທີ່ ແລະ ຊ່ວງລາຄາທີ່ແຕກຕ່າງກັນ.</p>
+        </div>
+        <div class="text-center p-6 bg-neutral-50 rounded-xl fade-in"
+             style="animation-delay: 0.2s">
+          <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-8 w-8 text-primary-600"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium mb-2">ຄູ່ຮ່ວມງານທີ່ໄວ້ໃຈໄດ້</h3>
+          <p class="text-neutral-600">
+            ພວກເຮົາຮ່ວມມືກັບນັກພັດທະນາ ແລະ ຜູ້ຂາຍທີ່ໜ້າເຊື່ອຖື ເພື່ອຮັບປະກັນຄຸນນະພາບ ແລະ ຄວາມໂປ່ງໃສ.
+          </p>
+        </div>
+        <div class="text-center p-6 bg-neutral-50 rounded-xl fade-in"
+             style="animation-delay: 0.4s">
+          <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-8 w-8 text-primary-600"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium mb-2">ຂັ້ນຕອນວ່ອງໄວ</h3>
+          <p class="text-neutral-600">ຂັ້ນຕອນການຊື້-ຂາຍທີ່ກະທັດຮັດ ຊ່ວຍປະຢັດເວລາ ແລະ ຫຼຸດຜ່ອນຄວາມກັງວົນ.</p>
+        </div>
+        <div class="text-center p-6 bg-neutral-50 rounded-xl fade-in"
+             style="animation-delay: 0.6s">
+          <div class="bg-primary-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg"
+                 class="h-8 w-8 text-primary-600"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-medium mb-2">ຕົວແທນຜູ້ຊ່ຽວຊານ</h3>
+          <p class="text-neutral-600">ຕົວແທນມືອາຊີບຂອງພວກເຮົາພ້ອມໃຫ້ບໍລິການທ່ານທຸກຂັ້ນຕອນ.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Featured Agents -->
+  <section class="py-24 bg-primary-950 text-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-serif mb-4">ພົບກັບຕົວແທນຜູ້ຊ່ຽວຊານຂອງພວກເຮົາ</h2>
+        <p class="text-neutral-300 max-w-2xl mx-auto">
+          ທີມງານມືອາຊີບຂອງພວກເຮົາອຸທິດຕົນເພື່ອຊ່ວຍທ່ານຊອກຫາອະສັງຫາລິມະຊັບໃນຝັນຂອງທ່ານ.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {% for agent in agents %}
+          <div class="bg-primary-900 rounded-xl overflow-hidden slide-in"
+               style="animation-delay: {{ forloop.counter0|floatformat:1 }}s">
+            <div class="relative">
+              {% if agent.avatar %}
+                <img src="{{ agent.avatar.url }}"
+                     alt="{{ agent.full_name }}"
+                     width=""
+                     height=""
+                     class="w-full h-60 object-cover">
+              {% else %}
+                <div class="w-full h-60 bg-primary-800 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       class="h-20 w-20 text-primary-500"
+                       fill="none"
+                       viewBox="0 0 24 24"
+                       stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-medium mb-1">{{ agent.full_name }}</h3>
+              <p class="text-neutral-300 mb-4">ຕົວແທນອະສັງຫາລິມະຊັບ</p>
+              <div class="flex space-x-3">
+                {% if agent.facebook %}
+                  <a href="{{ agent.facebook }}"
+                     class="text-neutral-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5"
+                         fill="currentColor"
+                         viewBox="0 0 24 24">
+                      <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+                    </svg>
+                  </a>
+                {% endif %}
+                {% if agent.twitter %}
+                  <a href="{{ agent.twitter }}"
+                     class="text-neutral-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5"
+                         fill="currentColor"
+                         viewBox="0 0 24 24">
+                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+                    </svg>
+                  </a>
+                {% endif %}
+                {% if agent.instagram %}
+                  <a href="{{ agent.instagram }}"
+                     class="text-neutral-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5"
+                         fill="currentColor"
+                         viewBox="0 0 24 24">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                  </a>
+                {% endif %}
+                {% if agent.linkedin %}
+                  <a href="{{ agent.linkedin }}"
+                     class="text-neutral-400 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5"
+                         fill="currentColor"
+                         viewBox="0 0 24 24">
+                      <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
+                    </svg>
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% empty %}
+          <div class="col-span-4 text-center py-12">
+            <p class="text-neutral-300">ບໍ່ມີຕົວແທນໃນຂະນະນີ້.</p>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="text-center mt-12">
+        <a href="{% url 'agent_list' %}"
+           class="btn bg-white hover:bg-neutral-100 text-primary-950">ເບິ່ງຕົວແທນທັງໝົດ</a>
+      </div>
+    </div>
+  </section>
+  <!-- Testimonials -->
+  <section class="py-24 bg-neutral-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-serif mb-4">ສິ່ງທີ່ລູກຄ້າເວົ້າເຖິງພວກເຮົາ</h2>
+        <p class="text-neutral-600 max-w-2xl mx-auto">
+          ອ່ານຄຳຕິຊົມຈາກລູກຄ້າທີ່ພໍໃຈ ຜູ້ທີ່ໄດ້ພົບອະສັງຫາລິມະຊັບໃນຝັນຂອງພວກເຂົາກັບພວກເຮົາ.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white rounded-xl shadow-property p-8 fade-in">
+          <div class="flex items-center mb-4">
+            <div class="text-secondary-500">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-neutral-600 mb-6">
+            "Working with EstatePro was a fantastic experience. They made finding our dream home easy and enjoyable. Their attention to detail and understanding of our needs was exceptional."
+          </p>
+          <div class="flex items-center">
+            <div class="bg-neutral-200 rounded-full w-12 h-12 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6 text-neutral-500"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h4 class="font-medium">Sarah Johnson</h4>
+              <p class="text-sm text-neutral-500">ເຈົ້າຂອງເຮືອນ</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-property p-8 fade-in"
+             style="animation-delay: 0.2s">
+          <div class="flex items-center mb-4">
+            <div class="text-secondary-500">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-neutral-600 mb-6">
+            "I couldn't be happier with my experience with EstatePro. Their team was professional, knowledgeable, and responsive. They helped me find the perfect apartment within my budget."
+          </p>
+          <div class="flex items-center">
+            <div class="bg-neutral-200 rounded-full w-12 h-12 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6 text-neutral-500"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h4 class="font-medium">Michael Thompson</h4>
+              <p class="text-sm text-neutral-500">ນັກລົງທຶນອະສັງຫາ</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-property p-8 fade-in"
+             style="animation-delay: 0.4s">
+          <div class="flex items-center mb-4">
+            <div class="text-secondary-500">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-secondary-500 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+            <div class="text-neutral-400 ml-1">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6"
+                   fill="currentColor"
+                   viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-neutral-600 mb-6">
+            "As a first-time homebuyer, I was nervous about the process, but EstatePro guided me every step of the way. Their expertise and patience made the experience stress-free."
+          </p>
+          <div class="flex items-center">
+            <div class="bg-neutral-200 rounded-full w-12 h-12 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg"
+                   class="h-6 w-6 text-neutral-500"
+                   fill="none"
+                   viewBox="0 0 24 24"
+                   stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </div>
+            <div class="ml-4">
+              <h4 class="font-medium">Emily Rodriguez</h4>
+              <p class="text-sm text-neutral-500">ຜູ້ຊື້ຄັ້ງທຳອິດ</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Call to Action -->
+  <section class="py-20 bg-gradient-to-r from-primary-800 to-primary-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-serif mb-4">ພ້ອມແລ້ວບໍ່ທີ່ຈະຊອກຫາອະສັງຫາໃນຝັນຂອງທ່ານ?</h2>
+      <p class="text-xl mb-8 max-w-2xl mx-auto">
+        ບໍ່ວ່າທ່ານກຳລັງຊອກຫາຊື້, ຂາຍ, ຫຼື ເຊົ່າ, ທີມງານຜູ້ຊ່ຽວຊານຂອງພວກເຮົາພ້ອມຊ່ວຍເຫຼືອທ່ານທຸກຂັ້ນຕອນ.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="{% url 'property_list' %}"
+           class="btn bg-white text-primary-800 hover:bg-neutral-100 px-8 py-3">ຄົ້ນຫາອະສັງຫາ</a>
+        <a href="{% url 'contact' %}"
+           class="btn bg-secondary-500 text-white hover:bg-secondary-600 px-8 py-3">ຕິດຕໍ່ພວກເຮົາ</a>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
