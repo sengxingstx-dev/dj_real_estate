@@ -285,10 +285,12 @@ class InquiryFormAdmin(forms.ModelForm):
 
         # Make property and user fields read-only if instance exists, as they are usually set contextually
         if self.instance and self.instance.pk:
-            self.fields["property"].widget.attrs[
-                "disabled"
-            ] = True  # Or readonly, but disabled is clearer for select
-            self.fields["user"].widget.attrs["disabled"] = True
+            # self.fields["property"].widget.attrs[
+            #     "disabled"
+            # ] = True  # Or readonly, but disabled is clearer for select
+            # self.fields["user"].widget.attrs["disabled"] = True
+            self.fields["property"].disabled = True  # Set the field itself as disabled
+            self.fields["user"].disabled = True  # Set the field itself as disabled
 
         self.fields["property"].label = "ອະສັງຫາ"
         self.fields["name"].label = "ຊື່ຜູ້ສອບຖາມ"
