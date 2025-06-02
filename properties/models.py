@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
-from django.utils.text import slugify
+
+# from django.utils.text import slugify # not support unicode
+from slugify import slugify
 
 
 class PropertyType(models.Model):
@@ -75,7 +77,20 @@ class Property(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            # Use the python-slugify library which handles Unicode better
+            self.slug = slugify(
+                self.title, allow_unicode=False
+            )  # Set allow_unicode=False for more standard web slugs
+            # If you want to allow Unicode characters directly in the slug (less common for URLs):
+            # self.slug = slugify(self.title, allow_unicode=True)
+
+            # Ensure uniqueness if the generated slug already exists
+            original_slug = self.slug
+            counter = 1
+            while Property.objects.filter(slug=self.slug).exclude(pk=self.pk).exists():
+                self.slug = f"{original_slug}-{counter}"
+                counter += 1
+
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):

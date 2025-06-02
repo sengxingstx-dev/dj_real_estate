@@ -9,7 +9,7 @@
       <div class="max-w-5xl mx-auto">
         <!-- Search Header -->
         <div class="text-center mb-12">
-          <h1 class="text-4xl md:text-5xl font-serif font-bold text-primary-950 mb-4">Search Results</h1>
+          <h1 class="text-4xl md:text-5xl font-serif font-bold text-primary-950 mb-4">ຄົ້ນຫາ My Way Production</h1>
           {% if query %}<p class="text-lg text-neutral-600">Showing results for "{{ query }}"</p>{% endif %}
         </div>
         <!-- Search Form -->
@@ -20,7 +20,7 @@
                    value="{{ query }}"
                    class="input flex-grow"
                    placeholder="Search properties...">
-            <button type="submit" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">ຄົ້ນຫາ</button>
           </form>
         </div>
         <!-- Search Results -->
@@ -65,7 +65,7 @@
                            stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                       </svg>
-                      {{ property.bedrooms }} Beds
+                      {{ property.bedrooms }} ຕຽງນອນ
                     </span>
                   {% endif %}
                   {% if property.bathrooms %}
@@ -77,7 +77,7 @@
                            stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      {{ property.bathrooms }} Baths
+                      {{ property.bathrooms }} ຫ້ອງນ້ຳ
                     </span>
                   {% endif %}
                   <span class="flex items-center">
@@ -92,7 +92,7 @@
                   </span>
                 </div>
                 <a href="{{ property.get_absolute_url }}"
-                   class="btn btn-outline w-full mt-auto">View Details</a>
+                   class="btn btn-outline w-full mt-auto">ເບິ່ງລາຍລະອຽດ</a>
               </div>
             </div>
           {% empty %}

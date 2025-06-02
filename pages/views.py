@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 
 from accounts.models import UserProfile
-from properties.models import Property, PropertyType
+from properties.models import Location, Property, PropertyType
 
 
 class HomeView(TemplateView):
@@ -12,6 +12,7 @@ class HomeView(TemplateView):
         context["featured_properties"] = Property.objects.filter(is_featured=True)[:6]
         context["latest_properties"] = Property.objects.all().order_by("-created_at")[:8]
         context["property_types"] = PropertyType.objects.all()[:6]
+        context["locations"] = Location.objects.all()[:6]
         context["agents"] = UserProfile.objects.filter(user_type="agent")[:4]
         return context
 
