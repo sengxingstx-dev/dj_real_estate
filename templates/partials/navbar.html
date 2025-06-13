@@ -44,9 +44,9 @@
                      {% if user.is_staff or user.profile.user_type == 'admin' or user.profile.user_type == 'agent' %}
                         <a href="{% url 'dashboard_home' %}"
                            class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">ຫນ້າແດສບອດ</a>
-                        <a href="{% url 'booking_history' %}"
-                           class="block px-4 py-2 rounded-md text-sm text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ປະຫວັດການຈອງ</a>
                      {% endif %}
+                     <a href="{% url 'booking_history' %}"
+                        class="block px-4 py-2 rounded-md text-sm text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ປະຫວັດການຈອງ</a>
                      <a href="{% url 'logout' %}"
                         class="block px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100">ອອກຈາກລະບົບ</a>
                   </div>
@@ -91,9 +91,9 @@
             {% if user.is_staff or user.profile.user_type == 'admin' or user.profile.user_type == 'agent' %}
                <a href="{% url 'dashboard_home' %}"
                   class="px-3 py-2 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ແດສບອດ</a>
-               <a href="{% url 'booking_history' %}"
-                  class="px-3 py-2 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ປະຫວັດການຈອງ</a>
             {% endif %}
+            <a href="{% url 'booking_history' %}"
+               class="px-3 py-2 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ປະຫວັດການຈອງ</a>
             <a href="{% url 'logout' %}"
                class="px-3 py-2 rounded-md text-neutral-700 hover:bg-neutral-100 hover:text-primary-700">ອອກຈາກລະບົບ</a>
          {% else %}
