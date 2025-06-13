@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static humanize %}
+{% block title %}
+  ປະຫວັດການຈອງ - MyWayProduction
+{% endblock title %}
+{% block content %}
+  <section class="py-12 bg-neutral-100">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl md:text-4xl font-serif font-bold text-primary-950 mb-8 text-center">ປະຫວັດການຈອງຂອງທ່ານ</h1>
+      {% if bookings %}
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-neutral-200">
+              <thead class="bg-neutral-50">
+                <tr>
+                  <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ອະສັງຫາ</th>
+                  <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ວັນທີຈອງ/ນັດໝາຍ</th>
+                  <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ສະຖານະ</th>
+                  <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຂໍຈອງເມື່ອ</th>
+                  <th class="px-6 py-3 text-center font-medium text-neutral-500 uppercase tracking-wider">ສະລິບ</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-neutral-200">
+                {% for booking in bookings %}
+                  <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <a href="{{ booking.property.get_absolute_url }}"
+                         class="text-sm font-medium text-primary-700 hover:text-primary-900 hover:underline">{{ booking.property.title|truncatechars:40 }}</a>
+                      <div class="text-xs text-neutral-500">{{ booking.property.location.name }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">{{ booking.booking_date|date:"d-m-Y" }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <span class="badge {% if booking.status == 'confirmed' %}bg-green-500 {% elif booking.status == 'pending_review' %}bg-yellow-500 {% elif booking.status == 'rejected' %}bg-red-500 {% elif booking.status == 'cancelled' %}bg-neutral-500 {% else %}bg-neutral-400{% endif %} text-white px-2 py-1 text-xs">
+                        {{ booking.get_status_display }}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ booking.created_at|timesince }} ago</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center">
+                      {% if booking.payment_slip %}
+                        <a href="{{ booking.payment_slip.url }}"
+                           target="_blank"
+                           class="text-blue-600 hover:text-blue-800 hover:underline">ເບິ່ງສະລິບ</a>
+                      {% else %}
+                        <span class="text-neutral-400">-</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        {% if is_paginated %}
+          <div class="mt-8">
+            <nav class="flex justify-center">
+              <ul class="flex space-x-2">
+                {% if page_obj.has_previous %}
+                  <li>
+                    <a href="?page={{ page_obj.previous_page_number }}"
+                       class="px-4 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-200 shadow-sm">ກັບຄືນ</a>
+                  </li>
+                {% endif %}
+                <li>
+                  <span class="px-4 py-2 rounded-md bg-primary-100 text-primary-700 shadow-sm">ໜ້າ {{ page_obj.number }} ຈາກ {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                  <li>
+                    <a href="?page={{ page_obj.next_page_number }}"
+                       class="px-4 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-200 shadow-sm">ຕໍ່ໄປ</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+          </div>
+        {% endif %}
+      {% else %}
+        <div class="text-center py-10 bg-white rounded-xl shadow-lg">
+          <p class="text-neutral-500 text-lg">ທ່ານຍັງບໍ່ມີປະຫວັດການຈອງເທື່ອ.</p>
+          <a href="{% url 'property_list' %}" class="btn btn-primary mt-6">ເລີ່ມຄົ້ນຫາອະສັງຫາ</a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock content %}

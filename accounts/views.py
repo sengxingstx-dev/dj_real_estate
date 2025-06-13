@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from properties.models import Inquiry, Property
+from properties.models import Booking, Inquiry, Property
 
 from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserProfileForm
 from .models import UserProfile
@@ -30,6 +30,12 @@ class CustomLoginView(LoginView):
     template_name = "accounts/login.html"
     authentication_form = CustomAuthenticationForm
     redirect_authenticated_user = True
+
+    def get_success_url(self):
+        # Check if the logged-in user is a superuser
+        if self.request.user.is_superuser:
+            return reverse_lazy("dashboard_home")
+        return super().get_success_url()
 
 
 def custom_logout(request):
@@ -107,3 +113,17 @@ class AgentDetailView(DetailView):
         agent = self.get_object().user
         context["properties"] = Property.objects.filter(agent=agent)
         return context
+
+
+class UserBookingHistoryView(LoginRequiredMixin, ListView):
+    model = Booking
+    template_name = "accounts/booking_history.html"
+    context_object_name = "bookings"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            Booking.objects.filter(user=self.request.user)
+            .select_related("property", "property__location")
+            .order_by("-created_at")
+        )

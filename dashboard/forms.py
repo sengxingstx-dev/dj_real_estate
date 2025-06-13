@@ -5,6 +5,7 @@ from django.db.models import Q
 
 from accounts.models import UserProfile
 from properties.models import (
+    Booking,
     Feature,
     Inquiry,
     Location,
@@ -267,6 +268,32 @@ class PropertyImageFormAdmin(forms.ModelForm):
         self.fields["caption"].label = "ຄຳບັນຍາຍຮູບ"
         self.fields["is_primary"].label = "ຕັ້ງເປັນຮູບຫຼັກ"
         self.fields["order"].label = "ລຳດັບການສະແດງ"
+
+
+class BookingReviewFormAdmin(forms.ModelForm):
+    admin_notes = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 3, "class": "textarea"}),
+        required=False,
+        label="ໝາຍເຫດຈາກແອັດມິນ",
+        help_text="Optional notes regarding the booking status change.",
+    )
+
+    class Meta:
+        model = Booking
+        fields = [
+            "status",
+            "admin_notes",
+        ]  # 'admin_notes' is not a model field yet, we'll handle it in the view or add to model
+        # If 'admin_notes' is not added to the Booking model, it won't be saved automatically by form.save()
+        # For now, let's assume we might add it to the model later or handle it separately.
+        # If it's purely for display or notification, it might not need to be a model field.
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["status"].widget.attrs.update({"class": "input"})
+        self.fields["status"].label = "ສະຖານະການຈອງ"
+        # If admin_notes is added to Booking model, its widget will get 'textarea' class from above.
+        # If not, this form field will still render with the specified widget.
 
 
 class InquiryFormAdmin(forms.ModelForm):

@@ -85,7 +85,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <!-- Property Details -->
-          <div class="md:col-span-2">
+          <div class="md:col-span-1">
             <!-- Property Description -->
             <div class="mb-8">
               <h3 class="text-2xl font-serif font-semibold text-primary-950 mb-4">ຄຳອະທິບາຍ</h3>
@@ -151,6 +151,56 @@
               </div>
             {% endif %}
           </div>
+          <!-- Booking Form -->
+          <div class="bg-white p-6 rounded-xl shadow-lg h-fit">
+            <h3 class="text-xl font-serif font-semibold text-primary-950 mb-4">ຈອງອະສັງຫານີ້</h3>
+            {% if user.is_authenticated %}
+              <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                <p class="text-sm text-blue-700 font-semibold mb-2">ຂັ້ນຕອນການຈອງ:</p>
+                <ol class="list-decimal list-inside text-sm text-blue-600 space-y-1">
+                  <li>ສະແກນ QR Code ດ້ານລຸ່ມເພື່ອຊຳລະຄ່າຈອງ (200,000 kip).</li>
+                  <li>ກະລຸນາຕື່ມຂໍ້ມູນໃນແບບຟອມນີ້ໃຫ້ຄົບຖ້ວນ.</li>
+                  <li>ອັບໂຫຼດສະລິບຫຼັກຖານການໂອນເງິນຂອງທ່ານ.</li>
+                  <li>ກົດ "ສົ່ງຄຳຂໍຈອງ" ເພື່ອສົ່ງຂໍ້ມູນ.</li>
+                  <li>ພວກເຮົາຈະກວດສອບ ແລະ ຕິດຕໍ່ກັບເພື່ອຢືນຢັນການຈອງ.</li>
+                </ol>
+              </div>
+              <div class="mb-4 text-center">
+                <p class="text-sm text-neutral-700 mb-1">ສະແກນເພື່ອຊຳລະຄ່າຈອງ:</p>
+                <a href="{% static 'img/qr_payment.jpg' %}">
+                  <img src="{% static qr_code_image_url %}"
+                       alt="QR Code ສໍາລັບການຊໍາລະເງິນ"
+                       class="mx-auto h-40 w-40 border rounded-md"
+                       width=""
+                       height="">
+                </a>
+                <p class="text-xs text-neutral-500 mt-1">(ຕົວຢ່າງ QR Code)</p>
+              </div>
+              <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                {% if booking_form.non_field_errors %}
+                  <div class="p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">
+                    {% for error in booking_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                  </div>
+                {% endif %}
+                <input type="hidden" name="form_type" value="booking">
+                {% for field in booking_form %}
+                  <div>
+                    <label for="{{ field.id_for_label }}"
+                           class="block text-sm font-medium text-neutral-700 mb-1">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<p class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</p>{% endif %}
+                  </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-secondary w-full">ສົ່ງຄຳຂໍຈອງ</button>
+              </form>
+            {% else %}
+              <p class="text-neutral-600">
+                ກະລຸນາ <a href="{% url 'login' %}?next={{ request.path }}"
+    class="text-primary-600 hover:underline">ເຂົ້າສູ່ລະບົບ</a> ເພື່ອຈອງອະສັງຫານີ້.
+              </p>
+            {% endif %}
+          </div>
           <!-- Inquiry Form -->
           <div class="bg-white p-6 rounded-xl shadow-lg h-fit">
             <h3 class="text-xl font-serif font-semibold text-primary-950 mb-4">ສົນໃຈອະສັງຫານີ້?</h3>
@@ -161,6 +211,7 @@
                   {% for error in inquiry_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
                 </div>
               {% endif %}
+              <input type="hidden" name="form_type" value="inquiry">
               {% for field in inquiry_form %}
                 <div>
                   <label for="{{ field.id_for_label }}"

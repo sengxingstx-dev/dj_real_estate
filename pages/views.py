@@ -9,8 +9,9 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["featured_properties"] = Property.objects.filter(is_featured=True)[:6]
-        context["latest_properties"] = Property.objects.all().order_by("-created_at")[:8]
+        active_properties = Property.objects.exclude(status__in=["sold", "rented"])
+        context["featured_properties"] = active_properties.filter(is_featured=True)[:6]
+        context["latest_properties"] = active_properties.all().order_by("-created_at")[:8]
         context["property_types"] = PropertyType.objects.all()[:6]
         context["locations"] = Location.objects.all()[:6]
         context["agents"] = UserProfile.objects.filter(user_type="agent")[:4]

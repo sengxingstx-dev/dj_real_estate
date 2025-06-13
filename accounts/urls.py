@@ -12,4 +12,5 @@ urlpatterns = [
     path("profile/update/", views.ProfileUpdateView.as_view(), name="profile_update"),
     path("agents/", views.AgentListView.as_view(), name="agent_list"),
     path("agents/<int:pk>/", views.AgentDetailView.as_view(), name="agent_detail"),
+    path("booking-history/", views.UserBookingHistoryView.as_view(), name="booking_history"),
 ]

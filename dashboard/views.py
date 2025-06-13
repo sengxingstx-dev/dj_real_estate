@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -18,6 +18,7 @@ from django.views.generic import (
 
 from accounts.models import UserProfile
 from dashboard.forms import (
+    BookingReviewFormAdmin,
     CustomUserCreationFormAdmin,
     FeatureFormAdmin,
     InquiryFormAdmin,
@@ -29,6 +30,7 @@ from dashboard.forms import (
     UserProfileFormAdmin,
 )
 from properties.models import (
+    Booking,
     Feature,
     Inquiry,
     Location,
@@ -78,6 +80,25 @@ class DashboardHomeView(LoginRequiredMixin, TemplateView):
             context["properties_for_rent"] = properties.filter(status="for_rent").count()
             context["properties_sold"] = properties.filter(status="sold").count()
             context["properties_rented"] = properties.filter(status="rented").count()
+
+            # Booking count
+            if user.profile.user_type == "agent" and not user.is_staff:
+                context["total_bookings"] = Booking.objects.filter(property__agent=user).count()
+            else:  # Admin/Staff
+                context["total_bookings"] = Booking.objects.all().count()
+
+            # Revenue from sold and rented properties separately
+            context["revenue_sold"] = (
+                properties.filter(status="sold").aggregate(Sum("price"))["price__sum"] or 0
+            )
+            context["revenue_rented"] = (
+                properties.filter(status="rented").aggregate(Sum("price"))["price__sum"] or 0
+            )
+
+            # Revenue from sold/rented properties
+            revenue_properties = properties.filter(status__in=["sold", "rented"])
+            total_revenue = revenue_properties.aggregate(Sum("price"))["price__sum"] or 0
+            context["total_revenue"] = total_revenue
 
             # Property types distribution
             property_types = PropertyType.objects.annotate(count=Count("property")).order_by(
@@ -495,6 +516,74 @@ class PropertyImageDeleteAdminView(AgentRequiredMixin, DeleteView):
         property_pk = self.object.property.pk
         messages.success(self.request, "Gallery image deleted successfully.")
         return reverse_lazy("dashboard_property_update", kwargs={"pk": property_pk})
+
+
+# Booking Management Views
+class BookingListAdminView(AgentRequiredMixin, ListView):
+    model = Booking
+    template_name = "dashboard/bookings/booking_list.html"
+    context_object_name = "bookings"
+    paginate_by = 10
+
+    def get_queryset(self):
+        user = self.request.user
+        # Admins/Staff see all bookings
+        if user.is_staff or user.profile.user_type == "admin":
+            return Booking.objects.select_related("property", "user").all().order_by("-created_at")
+        # Agents see bookings for their properties
+        elif user.profile.user_type == "agent":
+            return (
+                Booking.objects.select_related("property", "user")
+                .filter(property__agent=user)
+                .order_by("-created_at")
+            )
+        return Booking.objects.none()  # Should not happen due to AgentRequiredMixin
+
+
+class BookingDetailAdminView(AgentRequiredMixin, DetailView):
+    model = Booking
+    template_name = "dashboard/bookings/booking_detail.html"
+    context_object_name = "booking"
+
+    def get_queryset(self):
+        # Ensure agents can only see details of bookings for their properties
+        user = self.request.user
+        if user.is_staff or user.profile.user_type == "admin":
+            return Booking.objects.select_related("property", "user", "user__profile").all()
+        elif user.profile.user_type == "agent":
+            return Booking.objects.select_related("property", "user", "user__profile").filter(
+                property__agent=user
+            )
+        return Booking.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form_title"] = f"ລາຍລະອຽດການຈອງ: {self.object.property.title}"
+        return context
+
+
+class BookingReviewAdminView(AgentRequiredMixin, UpdateView):
+    model = Booking
+    form_class = BookingReviewFormAdmin
+    template_name = "dashboard/bookings/booking_review_form.html"
+    success_url = reverse_lazy("dashboard_bookings")
+    context_object_name = "booking"
+
+    def get_queryset(self):
+        # Ensure agents can only update bookings for their properties
+        user = self.request.user
+        if user.is_staff or user.profile.user_type == "admin":
+            return Booking.objects.all()
+        elif user.profile.user_type == "agent":
+            return Booking.objects.filter(property__agent=user)
+        return Booking.objects.none()
+
+    def form_valid(self, form):
+        messages.success(
+            self.request,
+            f"Booking for '{self.object.property.title}' by {self.object.name} has been updated.",
+        )
+        return super().form_valid(form)
 
 
 # Inquiry Management Views

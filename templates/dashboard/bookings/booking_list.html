@@ -1,0 +1,84 @@
+{% extends "base_dashboard.html" %}
+{% load static humanize %}
+{% block title %}
+  Bookings - Dashboard
+{% endblock title %}
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-serif font-bold text-primary-950">ຈັດການການຈອງ</h1>
+      <!-- Optional: Add button if needed, e.g., for manual booking creation by admin -->
+      <!-- <a href="#" class="btn btn-primary">ເພີ່ມການຈອງໃໝ່</a> -->
+    </div>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ອະສັງຫາ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຜູ້ຈອງ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ວັນທີຈອງ/ນັດໝາຍ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ສະຖານະ</th>
+              <th class="px-6 py-3 text-left font-medium text-neutral-500 uppercase tracking-wider">ຂໍຈອງເມື່ອ</th>
+              <th class="px-6 py-3 text-right font-medium text-neutral-500 uppercase tracking-wider">ຈັດການ</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            {% for booking in bookings %}
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-primary-950">{{ booking.property.title|truncatechars:30 }}</div>
+                  <div class="text-xs text-neutral-500">{{ booking.property.location.name }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-primary-950">{{ booking.name }}</div>
+                  <div class="text-xs text-neutral-500">{{ booking.email }}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">{{ booking.booking_date|date:"d-m-Y" }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="badge {% if booking.status == 'confirmed' %}bg-green-500 {% elif booking.status == 'pending_review' %}bg-yellow-500 {% elif booking.status == 'rejected' %}bg-red-500 {% elif booking.status == 'cancelled' %}bg-neutral-500 {% else %}bg-neutral-400{% endif %} text-white px-2 py-1 text-xs">
+                    {{ booking.get_status_display }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">{{ booking.created_at|timesince }} ago</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                  <a href="{% url 'dashboard_booking_detail' booking.pk %}"
+                     class="text-primary-600 hover:text-primary-900 mr-3">ເບິ່ງ</a>
+                  <a href="{% url 'dashboard_booking_review' booking.pk %}"
+                     class="text-blue-600 hover:text-blue-900">ກວດສອບ</a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="px-6 py-4 text-center text-sm text-neutral-500">ບໍ່ພົບຂໍ້ມູນການຈອງ.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if is_paginated %}
+      <div class="mt-6">
+        <nav class="flex justify-center">
+          <ul class="flex space-x-2">
+            {% if page_obj.has_previous %}
+              <li>
+                <a href="?page={{ page_obj.previous_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">ກັບຄືນ</a>
+              </li>
+            {% endif %}
+            <li>
+              <span class="px-3 py-2 rounded-md bg-neutral-200 text-neutral-700">ໜ້າ {{ page_obj.number }} ຈາກ {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+              <li>
+                <a href="?page={{ page_obj.next_page_number }}"
+                   class="px-3 py-2 rounded-md bg-white text-neutral-700 hover:bg-neutral-100">ຕໍ່ໄປ</a>
+              </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    {% endif %}
+  </div>
+{% endblock content %}

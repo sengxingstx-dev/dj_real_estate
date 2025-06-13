@@ -91,6 +91,18 @@ urlpatterns = [
         views.PropertyImageDeleteAdminView.as_view(),
         name="dashboard_property_image_delete",
     ),
+    # Booking Management URLs
+    path("bookings/", views.BookingListAdminView.as_view(), name="dashboard_bookings"),
+    path(
+        "bookings/<int:pk>/",
+        views.BookingDetailAdminView.as_view(),
+        name="dashboard_booking_detail",
+    ),
+    path(
+        "bookings/<int:pk>/review/",
+        views.BookingReviewAdminView.as_view(),
+        name="dashboard_booking_review",
+    ),
     # Inquiry Management URLs
     path("inquiries/", views.InquiryListView.as_view(), name="dashboard_inquiries"),
     path(

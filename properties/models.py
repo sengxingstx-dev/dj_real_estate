@@ -111,6 +111,40 @@ class PropertyImage(models.Model):
         return f"Image for {self.property.title}"
 
 
+class Booking(models.Model):
+    STATUS_CHOICES = (
+        ("pending_review", "Pending Review"),  # After user submits with payment slip
+        ("confirmed", "Confirmed"),
+        ("rejected", "Rejected"),
+        ("cancelled", "Cancelled"),  # if user or admin cancels
+    )
+
+    property = models.ForeignKey(Property, related_name="bookings", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, help_text="User making the booking")
+    name = models.CharField(max_length=100, help_text="Full name of the person booking")
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    booking_date = models.DateField(help_text="Preferred date for the booking/viewing")
+    message = models.TextField(blank=True, help_text="Any additional notes or requests")
+    payment_slip = models.ImageField(
+        upload_to="payment_slips/", help_text="Uploaded payment slip image"
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="pending_review")
+    admin_notes = models.TextField(
+        blank=True, null=True, help_text="Internal notes from admin/agent regarding this booking"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name_plural = "Bookings"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Booking by {self.name} for {self.property.title} on {self.booking_date}"
+
+
 class Inquiry(models.Model):
     STATUS_CHOICES = (
         ("new", "New"),

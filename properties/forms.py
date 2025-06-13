@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 
-from .models import Inquiry, Location, Property, PropertyType
+from .models import Booking, Inquiry, Location, Property, PropertyType
 
 
 class PropertyFilterForm(django_filters.FilterSet):
@@ -52,6 +52,36 @@ class PropertyFilterForm(django_filters.FilterSet):
         for field_name in self.Meta.fields:
             if field_name in self.filters:
                 self.filters[field_name].field.required = False
+
+
+class BookingForm(forms.ModelForm):
+    class Meta:
+        model = Booking
+        fields = ["name", "email", "phone", "booking_date", "message", "payment_slip"]
+        labels = {
+            "name": "ຊື່ ແລະ ນາມສະກຸນຜູ້ຈອງ",
+            "email": "ອີເມວຜູ້ຈອງ",
+            "phone": "ເບີໂທລະສັບຜູ້ຈອງ",
+            "booking_date": "ວັນທີຕ້ອງການຈອງ/ນັດໝາຍ",
+            "message": "ຂໍ້ຄວາມເພີ່ມເຕີມ (ຖ້າມີ)",
+            "payment_slip": "ອັບໂຫຼດສະລິບການໂອນເງິນ",
+        }
+        widgets = {
+            "name": forms.TextInput(attrs={"class": "input", "placeholder": "ປ້ອນຊື່ ແລະ ນາມສະກຸນ"}),
+            "email": forms.EmailInput(attrs={"class": "input", "placeholder": "ປ້ອນອີເມວ"}),
+            "phone": forms.TextInput(attrs={"class": "input", "placeholder": "ປ້ອນເບີໂທລະສັບ"}),
+            "booking_date": forms.DateInput(
+                attrs={"class": "input", "type": "date", "placeholder": "ເລືອກວັນທີ"}
+            ),
+            "message": forms.Textarea(
+                attrs={"class": "input", "rows": 3, "placeholder": "ລາຍລະອຽດເພີ່ມເຕີມ..."}
+            ),
+            "payment_slip": forms.ClearableFileInput(attrs={"class": "input"}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["payment_slip"].required = True
 
 
 class InquiryForm(forms.ModelForm):
