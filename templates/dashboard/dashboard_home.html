@@ -12,45 +12,45 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Statistics Cards -->
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ອະສັງຫາ</h3>
-          <p class="text-3xl font-bold text-primary-600">{{ total_properties }}</p>
-          <p class="text-sm text-neutral-500 mt-2">{{ monthly_new_properties }} ລາຍການໃຫ່ມເດືອນນີ້</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ອະສັງຫາ</h3>
+          <p class="text-4xl font-bold text-primary-600">{{ total_properties }}</p>
+          <p class="text-md text-neutral-500 mt-2">{{ monthly_new_properties }} ລາຍການໃຫ່ມເດືອນນີ້</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ການສອບຖາມ</h3>
-          <p class="text-3xl font-bold text-secondary-500">{{ total_inquiries }}</p>
-          <p class="text-sm text-neutral-500 mt-2">{{ monthly_new_inquiries }} ລາຍການໃຫ່ມເດືອນນີ້</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ການສອບຖາມ</h3>
+          <p class="text-4xl font-bold text-secondary-500">{{ total_inquiries }}</p>
+          <p class="text-md text-neutral-500 mt-2">{{ monthly_new_inquiries }} ລາຍການໃຫ່ມເດືອນນີ້</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ໃຫ້ຂາຍ</h3>
-          <p class="text-3xl font-bold text-green-600">{{ properties_for_sale }}</p>
-          <p class="text-sm text-neutral-500 mt-2">ລາຍການ</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ໃຫ້ຂາຍ</h3>
+          <p class="text-4xl font-bold text-green-600">{{ properties_for_sale }}</p>
+          <p class="text-md text-neutral-500 mt-2">ລາຍການ</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ໃຫ້ເຊົ່າ</h3>
-          <p class="text-3xl font-bold text-blue-600">{{ properties_for_rent }}</p>
-          <p class="text-sm text-neutral-500 mt-2">ລາຍການ</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ໃຫ້ເຊົ່າ</h3>
+          <p class="text-4xl font-bold text-blue-600">{{ properties_for_rent }}</p>
+          <p class="text-md text-neutral-500 mt-2">ລາຍການ</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ການຈອງ</h3>
-          <p class="text-3xl font-bold text-blue-600">{{ total_bookings }}</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ການຈອງ</h3>
+          <p class="text-4xl font-bold text-blue-600">{{ total_bookings }}</p>
           {% comment %} You might add monthly new bookings here if you calculate it {% endcomment %}
-          <p class="text-sm text-neutral-500 mt-2">ລາຍການ</p> {# Placeholder text #}
+          <p class="text-md text-neutral-500 mt-2">ລາຍການ</p> {# Placeholder text #}
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ລາຍຮັບຈາກການຂາຍ</h3>
-          <p class="text-3xl font-bold text-green-600">${{ revenue_sold|floatformat:0|intcomma }}</p>
-          <p class="text-sm text-neutral-500 mt-2">ຈາກ {{ properties_sold }} ລາຍການ</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ລາຍຮັບຈາກການຂາຍ</h3>
+          <p class="text-4xl font-bold text-green-600">${{ revenue_sold|floatformat:0|intcomma }}</p>
+          <p class="text-md text-neutral-500 mt-2">ຈາກ {{ properties_sold }} ລາຍການ</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ລາຍຮັບຈາກການເຊົ່າ</h3>
-          <p class="text-3xl font-bold text-blue-600">${{ revenue_rented|floatformat:0|intcomma }}</p>
-          <p class="text-sm text-neutral-500 mt-2">ຈາກ {{ properties_rented }} ລາຍການ</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ລາຍຮັບຈາກການເຊົ່າ</h3>
+          <p class="text-4xl font-bold text-blue-600">${{ revenue_rented|floatformat:0|intcomma }}</p>
+          <p class="text-md text-neutral-500 mt-2">ຈາກ {{ properties_rented }} ລາຍການ</p>
         </div>
         <div class="bg-white rounded-xl shadow-lg p-6">
-          <h3 class="text-lg font-medium text-primary-950 mb-2">ລາຍຮັບ (ຂາຍ/ເຊົ່າ)</h3>
-          <p class="text-3xl font-bold text-green-600">${{ total_revenue|floatformat:0|intcomma }}</p>
-          <p class="text-sm text-neutral-500 mt-2">ຈາກ {{ properties_sold }} ຂາຍ, {{ properties_rented }} ເຊົ່າ</p>
+          <h3 class="text-2lg font-medium text-primary-950 mb-2">ລາຍຮັບ (ຂາຍ/ເຊົ່າ)</h3>
+          <p class="text-4xl font-bold text-green-600">${{ total_revenue|floatformat:0|intcomma }}</p>
+          <p class="text-md text-neutral-500 mt-2">ຈາກ {{ properties_sold }} ຂາຍ, {{ properties_rented }} ເຊົ່າ</p>
         </div>
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
